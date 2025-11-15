@@ -16,5 +16,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+  kafka:
+    topic:
+      customer-created: customer-created
 
 secret_key: "2v8K9x7mN6bP4qZ1rT0vW3x8yF1aE5sH2tR7nY4pU6kL0mJ3qN9sV1dW6zC2bR8F"

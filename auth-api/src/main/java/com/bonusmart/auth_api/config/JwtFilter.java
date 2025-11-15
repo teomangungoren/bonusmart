@@ -29,7 +29,6 @@ public class JwtFilter extends OncePerRequestFilter {
         if(authHeader == null){
             filterChain.doFilter(request, response);
         }
-        System.out.println("girdi");
         assert authHeader != null;
         String token = authHeader.replace("Bearer ", "");
         String username = tokenService.extractUsername(token);
