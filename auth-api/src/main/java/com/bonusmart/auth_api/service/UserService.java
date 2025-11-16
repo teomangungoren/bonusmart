@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,9 @@ public class UserService {
         return user;
     }
 
-
+    public User getUserById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
     public void checkUserPassword(String requestedPassword, String storedPassword) {
         if(!passwordEncoder.matches(requestedPassword, storedPassword)) {
