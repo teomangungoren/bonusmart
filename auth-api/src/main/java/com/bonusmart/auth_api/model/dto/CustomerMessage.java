@@ -9,7 +9,7 @@ public record CustomerMessage(
         String lastName,
         String username,
         String email,
-        LocalDate dateOfBirth
+        String dateOfBirth
 ) {
 
     public static CustomerMessage toCustomerMessage(CreateCustomerRequest request) {
@@ -18,7 +18,7 @@ public record CustomerMessage(
                 request.lastName(),
                 request.username(),
                 request.email(),
-                request.dateOfBirth()
+                request.dateOfBirth().toString()
         );
     }
 }
