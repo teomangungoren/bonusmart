@@ -18,12 +18,17 @@ spring:
             - id: product-api
               uri: http://localhost:8082
               predicates:
-                - Path=/v1/products/**
+                - Path=/products/**
+            - id: category-api
+              uri: http://localhost:8082
+              predicates:
+                - Path=/categories/**
 
           globalcors:
             cors-configurations:
               '[/**]':
                 allowedOrigins:
+                  - "http://localhost:3000"
                   - "http://localhost:5173"
                 allowedMethods:
                   - GET
