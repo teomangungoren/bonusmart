@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: product-api
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5435/product-api
+    username: secret
+    password: secret
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+
+  elasticsearch:
+    uris: http://localhost:9200
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: product-elasticsearch-sync
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual_immediate
+
+server:
+  port: 8082
+
+category-api:
+  url: http://localhost:8083
+
+logging:
+  level:
+    com.bonusmart.product_api: DEBUG
+    com.bonusmart.product_api.service.ProductElasticsearchConsumer: DEBUG
+    org.springframework.web: INFO

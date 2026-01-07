@@ -8,7 +8,9 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/api-gateway" />
     <file type="web" url="file://$PROJECT_DIR$/auth-api" />
+    <file type="web" url="file://$PROJECT_DIR$/category-api" />
     <file type="web" url="file://$PROJECT_DIR$/customer-api" />
+    <file type="web" url="file://$PROJECT_DIR$/product-api" />
   </component>
   <component name="ProjectRootManager">
     <output url="file://$PROJECT_DIR$/out" />
