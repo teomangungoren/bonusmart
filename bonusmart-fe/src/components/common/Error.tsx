@@ -17,3 +17,4 @@ const Error: React.FC<ErrorProps> = ({ message, title = 'Error' }) => {
 
 export default Error;
 
+

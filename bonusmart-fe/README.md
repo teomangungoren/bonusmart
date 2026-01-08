@@ -65,3 +65,4 @@ The app connects to the API Gateway at `http://localhost:8081`.
 - User authentication
 - Responsive design
 
+

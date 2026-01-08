@@ -1,3 +1,5 @@
+package com.bonusmart.product_api.service
+
 import com.bonusmart.product_api.service.event.DebeziumEventParser
 import com.bonusmart.product_api.service.event.ProductIndexOrchestrator
 import org.slf4j.LoggerFactory
@@ -11,12 +13,12 @@ class ProductElasticsearchConsumer(
     private val parser: DebeziumEventParser,
     private val orchestrator: ProductIndexOrchestrator
 ) {
-
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val logger = LoggerFactory.getLogger(ProductElasticsearchConsumer::class.java)
 
     @KafkaListener(
         topics = ["product-api.public.products"],
-        groupId = "product-elasticsearch-sync"
+        groupId = "product-elasticsearch-sync",
+        containerFactory = "kafkaListenerContainerFactory"
     )
     fun consume(
         @Payload message: String,
@@ -24,7 +26,7 @@ class ProductElasticsearchConsumer(
     ) {
         runCatching {
             parser.parse(message)
-                ?.also { orchestrator.handle(it) }
+                ?.let { orchestrator.handle(it) }
         }.onFailure {
             logger.error("Failed to process kafka message", it)
         }

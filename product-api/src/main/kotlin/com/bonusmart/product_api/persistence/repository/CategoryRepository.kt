@@ -74,3 +74,4 @@ interface CategoryRepository : JpaRepository<Category, UUID> {
     fun existsByIdAndDeletedFalse(@Param("id") id: UUID): Boolean
 }
 
+
