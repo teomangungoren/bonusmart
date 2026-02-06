@@ -10,72 +10,50 @@ import java.util.*
 
 @Service
 class CategoryApplicationService(
-    private val categoryService: CategoryService
+    private val categoryService: CategoryService,
+    private val categoryClosureService: CategoryClosureService
 ) {
     
     @Transactional
     fun createCategory(request: CreateCategoryRequest): CategoryResponse {
-        val category = categoryService.createCategory(
+        val category = categoryService.create(
             name = request.name,
-            description = request.description,
+            description = request.description
+        )
+
+        categoryClosureService.createCategoryClosure(
+            category = category,
             parentId = request.parentId
         )
-        
-        val childrenCount = category.children.size
+
+        val childrenCount = categoryClosureService.countChildren(category.id!!)
+
         return CategoryResponse.from(category, childrenCount)
     }
     
     @Transactional
     fun updateCategory(categoryId: UUID, request: UpdateCategoryRequest): CategoryResponse {
-        val category = categoryService.updateCategory(
+        val category = categoryService.update(
             categoryId = categoryId,
             name = request.name,
             description = request.description
         )
-        
-        val childrenCount = category.children.size
+
+        val childrenCount = categoryClosureService.countChildren(categoryId)
+
         return CategoryResponse.from(category, childrenCount)
     }
     
     @Transactional
     fun deleteCategory(categoryId: UUID) {
-        categoryService.deleteCategory(categoryId)
+        categoryService.softDelete(categoryId)
     }
-    
-    @Transactional(readOnly = true)
+
     fun retrieveCategoryById(categoryId: UUID): CategoryResponse {
-        val category = categoryService.findByIdWithChildren(categoryId)
-        val childrenCount = category.children.size
+        val category = categoryService.findById(categoryId)
+        val childrenCount = categoryClosureService.countChildren(categoryId)
+
         return CategoryResponse.from(category, childrenCount)
-    }
-    
-    @Transactional(readOnly = true)
-    fun retrieveAllRootCategories(): List<CategoryResponse> {
-        val categories = categoryService.findAllRootCategoriesWithChildren()
-        return categories.map { CategoryResponse.from(it, it.children.size) }
-    }
-    
-    @Transactional(readOnly = true)
-    fun retrieveCategoryTree(rootCategoryId: UUID? = null): List<CategoryTreeResponse> {
-        val rootCategories = if (rootCategoryId != null) {
-            listOf(categoryService.findByIdWithChildren(rootCategoryId))
-        } else {
-            categoryService.findAllRootCategoriesWithChildren()
-        }
-        
-        return rootCategories
-            .filter { !it.deleted }
-            .map { CategoryTreeResponse.from(it) }
-    }
-    
-    @Transactional(readOnly = true)
-    fun retrieveAncestorCategoryIdsIncludingSelf(categoryId: UUID): List<UUID> {
-        return categoryService.getAncestorIds(categoryId)
-    }
-    
-    @Transactional(readOnly = true)
-    fun retrieveDescendantCategoryIdsIncludingSelf(categoryId: UUID): List<UUID> {
-        return categoryService.getDescendantIds(categoryId)
     }
 }
 

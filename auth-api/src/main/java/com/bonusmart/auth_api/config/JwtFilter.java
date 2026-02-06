@@ -1,15 +1,13 @@
 package com.bonusmart.auth_api.config;
 
-import com.bonusmart.auth_api.service.TokenService;
-import com.bonusmart.auth_api.service.UserDetailService;
+import com.bonusmart.auth_api.model.dto.JwtAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,28 +17,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserDetailService userDetailService;
-    private final TokenService tokenService;
+    private final ProviderManager providerManager;
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null){
-            filterChain.doFilter(request, response);
-        }
-        assert authHeader != null;
         String token = authHeader.replace("Bearer ", "");
-        String username = tokenService.extractUsername(token);
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailService.loadUserByUsername(username);
-            if(tokenService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            }
-        }
+        var authenticationResult = providerManager.authenticate(new JwtAuthenticationToken(token));
+        SecurityContextHolder.getContext().setAuthentication(authenticationResult);
         filterChain.doFilter(request, response);
     }
 }

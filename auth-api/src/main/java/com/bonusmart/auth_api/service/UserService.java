@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,11 +33,10 @@ public class UserService {
     }
 
     public void checkUserPassword(String requestedPassword, String storedPassword) {
-        if(!passwordEncoder.matches(requestedPassword, storedPassword)) {
-          throw new RuntimeException("Password does not match");
+        if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
+            throw new RuntimeException("Password does not match");
         }
     }
-
 
 
 }

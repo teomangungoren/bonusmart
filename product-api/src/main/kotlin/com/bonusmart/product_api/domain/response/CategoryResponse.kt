@@ -8,18 +8,16 @@ data class CategoryResponse(
     val id: UUID,
     val name: String,
     val description: String?,
-    val parentId: UUID?,
-    val childrenCount: Int,
+    val childrenCount: Long,
     val createdAt: Instant?,
     val updatedAt: Instant?
 ) {
     companion object {
-        fun from(category: Category, childrenCount: Int = 0): CategoryResponse {
+        fun from(category: Category, childrenCount: Long = 0): CategoryResponse {
             return CategoryResponse(
                 id = category.id!!,
                 name = category.name,
                 description = category.description,
-                parentId = category.parent?.id,
                 childrenCount = childrenCount,
                 createdAt = category.createdDate,
                 updatedAt = category.updatedDate
